@@ -108,22 +108,22 @@ mod tests {
 
         fs.fan_off();
         fs.color(0, 0, 0);
-        thread::sleep(Duration::from_millis(1000));
+        thread::sleep(Duration::from_millis(5000));
         fs.fan_on();
         fs.color(0, 255, 0);
-        thread::sleep(Duration::from_millis(1000));
+        thread::sleep(Duration::from_millis(5000));
         fs.fan_off();
         fs.color(255, 0, 0);
-        thread::sleep(Duration::from_millis(1000));
+        thread::sleep(Duration::from_millis(5000));
         fs.fan_on();
         fs.color(0, 255, 0);
-        thread::sleep(Duration::from_millis(1000));
+        thread::sleep(Duration::from_millis(5000));
         fs.fan_off();
         fs.color(255, 0, 0);
-        thread::sleep(Duration::from_millis(1000));
+        thread::sleep(Duration::from_millis(5000));
         fs.fan_on();
         fs.color(0, 255, 0);
-        thread::sleep(Duration::from_millis(1000));
+        thread::sleep(Duration::from_millis(5000));
         fs.fan_off();
         fs.color(0, 0, 0);
 
