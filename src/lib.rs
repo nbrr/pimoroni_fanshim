@@ -72,14 +72,18 @@ mod tests {
     const BTN: u8 = 17;
     const FAN: u8 = 18;
 
-    #[test]
-    fn blink_led_rgb() -> Result<(), Box<dyn Error>> {
-        let mut fs: Fanshim = Fanshim {
+    fn default_config() -> Result<Fanshim, Box<dyn Error>> {
+        Ok(Fanshim {
             clk: Gpio::new()?.get(CLK)?.into_output(),
             dat: Gpio::new()?.get(DAT)?.into_output(),
             btn: Gpio::new()?.get(BTN)?.into_input_pullup(),
             fan: Gpio::new()?.get(FAN)?.into_output(),
-        };
+        })
+    }
+
+    #[test]
+    fn blink_led_rgb() -> Result<(), Box<dyn Error>> {
+        let mut fs: Fanshim = default_config()?;
 
         fs.led_off();
         thread::sleep(Duration::from_millis(1000));
@@ -94,6 +98,34 @@ mod tests {
         fs.color(0, 0, 255);
         thread::sleep(Duration::from_millis(1000));
         fs.led_off();
+
+        Ok(())
+    }
+
+    #[test]
+    fn blink_fan() -> Result<(), Box<dyn Error>> {
+        let mut fs: Fanshim = default_config()?;
+
+        fs.fan_off();
+        fs.color(0, 0, 0);
+        thread::sleep(Duration::from_millis(1000));
+        fs.fan_on();
+        fs.color(0, 255, 0);
+        thread::sleep(Duration::from_millis(1000));
+        fs.fan_off();
+        fs.color(255, 0, 0);
+        thread::sleep(Duration::from_millis(1000));
+        fs.fan_on();
+        fs.color(0, 255, 0);
+        thread::sleep(Duration::from_millis(1000));
+        fs.fan_off();
+        fs.color(255, 0, 0);
+        thread::sleep(Duration::from_millis(1000));
+        fs.fan_on();
+        fs.color(0, 255, 0);
+        thread::sleep(Duration::from_millis(1000));
+        fs.fan_off();
+        fs.color(0, 0, 0);
 
         Ok(())
     }
