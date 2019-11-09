@@ -3,11 +3,6 @@ use std::time::Duration;
 
 use rppal::gpio::{Gpio, InputPin, Level, Level::*, OutputPin};
 
-const CLK: u8 = 14;
-const DAT: u8 = 15;
-const BTN: u8 = 17;
-const FAN: u8 = 18;
-
 struct Fanshim {
     clk: OutputPin,
     dat: OutputPin,
@@ -70,9 +65,21 @@ impl Fanshim {
 mod tests {
     use super::*;
 
+    use std::error::Error;
+
+    const CLK: u8 = 14;
+    const DAT: u8 = 15;
+    const BTN: u8 = 17;
+    const FAN: u8 = 18;
+
     #[test]
-    fn blink_led_rgb() {
-        let fs: Fanshim = Default::default();
+    fn blink_led_rgb() -> Result<(), Box<dyn Error>> {
+        let mut fs: Fanshim = Fanshim {
+            clk: Gpio::new()?.get(CLK)?.into_output(),
+            dat: Gpio::new()?.get(DAT)?.into_output(),
+            btn: Gpio::new()?.get(BTN)?.into_input_pullup(),
+            fan: Gpio::new()?.get(FAN)?.into_output(),
+        };
 
         fs.led_off();
         thread::sleep(Duration::from_millis(1000));
@@ -87,5 +94,7 @@ mod tests {
         fs.color(0, 0, 255);
         thread::sleep(Duration::from_millis(1000));
         fs.led_off();
+
+        Ok(())
     }
 }
