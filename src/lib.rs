@@ -1,7 +1,7 @@
 use std::thread;
 use std::time::Duration;
 
-use rppal::gpio::{Gpio, InputPin, Level, Level::*, OutputPin};
+use rppal::gpio::{InputPin, Level, Level::*, OutputPin};
 
 struct Fanshim {
     clk: OutputPin,
@@ -67,12 +67,17 @@ impl Fanshim {
         self.color(0., 0, 0, 0);
         self.eof();
     }
+
+    fn btn_state(&self) -> Level {
+        self.btn.read()
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
+    use rppal::gpio::Gpio;
     use std::error::Error;
 
     const CLK: u8 = 14;
