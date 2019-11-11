@@ -110,6 +110,20 @@ mod tests {
         Ok(())
     }
 
+    fn blink_led_brightness() -> Result<(), Box<dyn Error>> {
+        let mut fs: Fanshim = default_config()?;
+
+        fs.led_off();
+        thread::sleep(Duration::from_millis(1000));
+        for i in 0..32 {
+            fs.color((i as f32) / 31., 255, 255, 255);
+            thread::sleep(Duration::from_millis(1000));
+            fs.led_off();
+        }
+
+        Ok(())
+    }
+
     #[test]
     fn blink_fan() -> Result<(), Box<dyn Error>> {
         let mut fs: Fanshim = default_config()?;
