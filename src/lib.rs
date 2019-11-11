@@ -43,7 +43,7 @@ impl Fanshim {
         };
 
         self.sof();
-        self.write_byte(224 + (31. * br) as u8);
+        self.write_byte(224 + (31. * brightness) as u8);
         self.write_byte(b);
         self.write_byte(g);
         self.write_byte(r);
@@ -117,10 +117,11 @@ mod tests {
         fs.led_off();
         thread::sleep(Duration::from_millis(1000));
         for i in 0..32 {
-            fs.color((i as f32) / 31., 255, 255, 255);
+            let br = (i as f32) / 31.;
+            fs.color(br, 255, 255, 255);
             thread::sleep(Duration::from_millis(1000));
-            fs.led_off();
         }
+        fs.led_off();
 
         Ok(())
     }
