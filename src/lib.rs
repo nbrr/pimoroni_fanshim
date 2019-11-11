@@ -33,9 +33,17 @@ impl Fanshim {
         }
     }
 
-    pub fn color(&mut self, r: u8, g: u8, b: u8) {
+    pub fn color(&mut self, br: f32, r: u8, g: u8, b: u8) {
+        let brightness = if br < 0. {
+            0.
+        } else if { br > 1. } {
+            1.
+        } else {
+            br
+        };
+
         self.sof();
-        self.write_byte(224 + 31);
+        self.write_byte(224 + (31. * br) as u8);
         self.write_byte(b);
         self.write_byte(g);
         self.write_byte(r);
@@ -56,7 +64,7 @@ impl Fanshim {
 
     fn led_off(&mut self) {
         self.sof();
-        self.color(0, 0, 0);
+        self.color(0., 0, 0, 0);
         self.eof();
     }
 }
@@ -87,15 +95,15 @@ mod tests {
 
         fs.led_off();
         thread::sleep(Duration::from_millis(1000));
-        fs.color(255, 0, 0);
+        fs.color(0.5, 255, 0, 0);
         thread::sleep(Duration::from_millis(1000));
         fs.led_off();
         thread::sleep(Duration::from_millis(1000));
-        fs.color(0, 255, 0);
+        fs.color(0.5, 0, 255, 0);
         thread::sleep(Duration::from_millis(1000));
         fs.led_off();
         thread::sleep(Duration::from_millis(1000));
-        fs.color(0, 0, 255);
+        fs.color(0.5, 0, 0, 255);
         thread::sleep(Duration::from_millis(1000));
         fs.led_off();
 
@@ -107,25 +115,25 @@ mod tests {
         let mut fs: Fanshim = default_config()?;
 
         fs.fan_off();
-        fs.color(0, 0, 0);
+        fs.led_off();
         thread::sleep(Duration::from_millis(5000));
         fs.fan_on();
-        fs.color(0, 255, 0);
+        fs.color(0.5, 0, 255, 0);
         thread::sleep(Duration::from_millis(5000));
         fs.fan_off();
-        fs.color(255, 0, 0);
+        fs.color(0.5, 255, 0, 0);
         thread::sleep(Duration::from_millis(5000));
         fs.fan_on();
-        fs.color(0, 255, 0);
+        fs.color(0.5, 0, 255, 0);
         thread::sleep(Duration::from_millis(5000));
         fs.fan_off();
-        fs.color(255, 0, 0);
+        fs.color(0.5, 255, 0, 0);
         thread::sleep(Duration::from_millis(5000));
         fs.fan_on();
-        fs.color(0, 255, 0);
+        fs.color(0.5, 0, 255, 0);
         thread::sleep(Duration::from_millis(5000));
         fs.fan_off();
-        fs.color(0, 0, 0);
+        fs.led_off();
 
         Ok(())
     }
