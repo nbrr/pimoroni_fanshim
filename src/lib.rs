@@ -110,6 +110,7 @@ mod tests {
         Ok(())
     }
 
+    #[test]
     fn blink_led_brightness() -> Result<(), Box<dyn Error>> {
         let mut fs: Fanshim = default_config()?;
 
