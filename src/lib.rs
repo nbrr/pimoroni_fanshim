@@ -158,4 +158,26 @@ mod tests {
 
         Ok(())
     }
+
+    #[test]
+    fn react_to_btn_10s() -> Result<(), Box<dyn Error>> {
+        use std::time::Instant;
+
+        let mut fs: Fanshim = default_config()?;
+
+        let start = Instant::now();
+        let stop = Duration::from_secs(10);
+
+        fs.led_off();
+        while (Instant::now()).duration_since(start) < stop {
+            if fs.btn_state() == High {
+                fs.color(0.5, 255, 255, 255);
+            } else {
+                fs.led_off();
+            }
+        }
+        fs.led_off();
+
+        Ok(())
+    }
 }
