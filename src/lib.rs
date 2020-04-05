@@ -1,9 +1,10 @@
 use std::thread;
 use std::time::Duration;
 
-use rppal::gpio::{InputPin, Level, Level::*, OutputPin};
+use rppal::gpio::{Gpio, InputPin, Level, Level::*, OutputPin};
+use std::error::Error;
 
-struct Fanshim {
+pub struct Fanshim {
     clk: OutputPin,
     dat: OutputPin,
     btn: InputPin,
@@ -11,6 +12,19 @@ struct Fanshim {
 }
 
 impl Fanshim {
+    pub fn default_config() -> Result<Fanshim, Box<dyn Error>> {
+        const CLK: u8 = 14;
+        const DAT: u8 = 15;
+        const BTN: u8 = 17;
+        const FAN: u8 = 18;
+        Ok(Fanshim {
+            clk: Gpio::new()?.get(CLK)?.into_output(),
+            dat: Gpio::new()?.get(DAT)?.into_output(),
+            btn: Gpio::new()?.get(BTN)?.into_input_pullup(),
+            fan: Gpio::new()?.get(FAN)?.into_output(),
+        })
+    }
+
     pub fn fan_on(&mut self) {
         self.fan.set_high();
     }
@@ -77,26 +91,9 @@ impl Fanshim {
 mod tests {
     use super::*;
 
-    use rppal::gpio::Gpio;
-    use std::error::Error;
-
-    const CLK: u8 = 14;
-    const DAT: u8 = 15;
-    const BTN: u8 = 17;
-    const FAN: u8 = 18;
-
-    fn default_config() -> Result<Fanshim, Box<dyn Error>> {
-        Ok(Fanshim {
-            clk: Gpio::new()?.get(CLK)?.into_output(),
-            dat: Gpio::new()?.get(DAT)?.into_output(),
-            btn: Gpio::new()?.get(BTN)?.into_input_pullup(),
-            fan: Gpio::new()?.get(FAN)?.into_output(),
-        })
-    }
-
     #[test]
     fn blink_led_rgb() -> Result<(), Box<dyn Error>> {
-        let mut fs: Fanshim = default_config()?;
+        let mut fs: Fanshim = Fanshim::default_config()?;
 
         fs.led_off();
         thread::sleep(Duration::from_millis(1000));
@@ -117,7 +114,7 @@ mod tests {
 
     #[test]
     fn blink_led_brightness() -> Result<(), Box<dyn Error>> {
-        let mut fs: Fanshim = default_config()?;
+        let mut fs: Fanshim = Fanshim::default_config()?;
 
         fs.led_off();
         thread::sleep(Duration::from_millis(1000));
@@ -133,7 +130,7 @@ mod tests {
 
     #[test]
     fn blink_fan() -> Result<(), Box<dyn Error>> {
-        let mut fs: Fanshim = default_config()?;
+        let mut fs: Fanshim = Fanshim::default_config()?;
 
         fs.fan_off();
         fs.led_off();
@@ -163,7 +160,7 @@ mod tests {
     fn react_to_btn_10s() -> Result<(), Box<dyn Error>> {
         use std::time::Instant;
 
-        let mut fs: Fanshim = default_config()?;
+        let mut fs: Fanshim = Fanshim::default_config()?;
 
         let start = Instant::now();
         let stop = Duration::from_secs(10);
