@@ -76,13 +76,13 @@ impl Fanshim {
         }
     }
 
-    fn led_off(&mut self) {
+    pub fn led_off(&mut self) {
         self.sof();
         self.color(0., 0, 0, 0);
         self.eof();
     }
 
-    fn btn_state(&self) -> Level {
+    pub fn btn_state(&self) -> Level {
         self.btn.read()
     }
 }
@@ -121,6 +121,7 @@ mod tests {
         for i in 0..32 {
             let br = (i as f32) / 31.;
             fs.color(br, 255, 255, 255);
+            println!("{:?}", br);
             thread::sleep(Duration::from_millis(1000));
         }
         fs.led_off();
