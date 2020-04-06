@@ -64,6 +64,17 @@ impl Fanshim {
         self.eof();
     }
 
+    pub fn color2(&mut self, br: u8, r: u8, g: u8, b: u8) {
+        let brightness = if br > 31 { 1 } else { br };
+
+        self.sof();
+        self.write_byte(224 + brightness);
+        self.write_byte(b);
+        self.write_byte(g);
+        self.write_byte(r);
+        self.eof();
+    }
+
     fn sof(&mut self) {
         for _ in 0..4 {
             self.write_byte(000);
