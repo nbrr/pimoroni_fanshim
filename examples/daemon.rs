@@ -29,7 +29,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             fanshim.fan_off();
             fanshim.color(BRIGHTNESS, 0, 255, 0);
         } else if temp >= BLOW_TEMP {
-            fanshim.fan_off();
+            fanshim.fan_on();
             fanshim.color(BRIGHTNESS, 255, 0, 0);
         } else {
             fanshim.color(BRIGHTNESS, 255, 255, 0);
