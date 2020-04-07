@@ -1,7 +1,6 @@
 use pimoroni_fanshim::Fanshim;
 use std::error::Error;
 
-use std::path::PathBuf;
 use structopt::StructOpt;
 
 use env_logger;
@@ -12,7 +11,7 @@ use log::debug;
 enum Switch {
     Off,
     On {
-        #[structopt(short, help = "brightness, from 0 to 31")]
+        #[structopt(long, help = "brightness, from 0 to 31")]
         br: u8,
         #[structopt(short, help = "red, from 0 to 255")]
         r: u8,
@@ -29,8 +28,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     let args = Switch::from_args();
 
     let mut fanshim = Fanshim::default_config()?;
-    fanshim.led_off();
-    fanshim.color(1., 255, 255, 255);
     debug!("fanshim intialized");
 
     match args {
@@ -39,7 +36,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             debug!("fanshim led off")
         }
         Switch::On { br, r, g, b } => {
-            fanshim.color2(br, r, g, b);
+            fanshim.color(br, r, g, b);
             debug!("fanshim led color {} {} {} {}", br, r, g, b)
         }
     }
