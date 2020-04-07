@@ -35,9 +35,8 @@ impl Fanshim {
 
     fn write_byte(&mut self, byte: u8) {
         let seq: Vec<Level> = (0..8u8)
-            .map(move |bit| if ((byte >> bit) & 1) == 1 { High } else { Low })
+            .map(move |bit| if ((byte << bit) & 128) == 128 { High } else { Low })
             .collect();
-
         for level in seq {
             self.dat.write(level);
             self.clk.set_high();
@@ -47,24 +46,7 @@ impl Fanshim {
         }
     }
 
-    pub fn color(&mut self, br: f32, r: u8, g: u8, b: u8) {
-        let brightness = if br < 0. {
-            0.
-        } else if { br > 1. } {
-            1.
-        } else {
-            br
-        };
-
-        self.sof();
-        self.write_byte(224 + (31. * brightness) as u8);
-        self.write_byte(b);
-        self.write_byte(g);
-        self.write_byte(r);
-        self.eof();
-    }
-
-    pub fn color2(&mut self, br: u8, r: u8, g: u8, b: u8) {
+    pub fn color(&mut self, br: u8, r: u8, g: u8, b: u8) {
         let brightness = if br > 31 { 1 } else { br };
 
         self.sof();
@@ -88,9 +70,7 @@ impl Fanshim {
     }
 
     pub fn led_off(&mut self) {
-        self.sof();
-        self.color(0., 0, 0, 0);
-        self.eof();
+        self.color(0, 0, 0, 0);
     }
 
     pub fn btn_state(&self) -> Level {
@@ -108,15 +88,15 @@ mod tests {
 
         fs.led_off();
         thread::sleep(Duration::from_millis(1000));
-        fs.color(0.5, 255, 0, 0);
+        fs.color(16, 255, 0, 0);
         thread::sleep(Duration::from_millis(1000));
         fs.led_off();
         thread::sleep(Duration::from_millis(1000));
-        fs.color(0.5, 0, 255, 0);
+        fs.color(16, 0, 255, 0);
         thread::sleep(Duration::from_millis(1000));
         fs.led_off();
         thread::sleep(Duration::from_millis(1000));
-        fs.color(0.5, 0, 0, 255);
+        fs.color(16, 0, 0, 255);
         thread::sleep(Duration::from_millis(1000));
         fs.led_off();
 
@@ -130,8 +110,7 @@ mod tests {
         fs.led_off();
         thread::sleep(Duration::from_millis(1000));
         for i in 0..32 {
-            let br = (i as f32) / 31.;
-            fs.color(br, 255, 255, 255);
+            fs.color(i, 255, 255, 255);
             println!("{:?}", br);
             thread::sleep(Duration::from_millis(1000));
         }
@@ -148,19 +127,19 @@ mod tests {
         fs.led_off();
         thread::sleep(Duration::from_millis(5000));
         fs.fan_on();
-        fs.color(0.5, 0, 255, 0);
+        fs.color(16, 0, 255, 0);
         thread::sleep(Duration::from_millis(5000));
         fs.fan_off();
-        fs.color(0.5, 255, 0, 0);
+        fs.color(16, 255, 0, 0);
         thread::sleep(Duration::from_millis(5000));
         fs.fan_on();
-        fs.color(0.5, 0, 255, 0);
+        fs.color(16, 0, 255, 0);
         thread::sleep(Duration::from_millis(5000));
         fs.fan_off();
-        fs.color(0.5, 255, 0, 0);
+        fs.color(16, 255, 0, 0);
         thread::sleep(Duration::from_millis(5000));
         fs.fan_on();
-        fs.color(0.5, 0, 255, 0);
+        fs.color(16, 0, 255, 0);
         thread::sleep(Duration::from_millis(5000));
         fs.fan_off();
         fs.led_off();
@@ -180,7 +159,7 @@ mod tests {
         fs.led_off();
         while (Instant::now()).duration_since(start) < stop {
             if fs.btn_state() == High {
-                fs.color(0.5, 255, 255, 255);
+                fs.color(16, 255, 255, 255);
             } else {
                 fs.led_off();
             }
