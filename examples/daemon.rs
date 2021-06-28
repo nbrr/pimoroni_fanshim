@@ -4,6 +4,9 @@ use std::error::Error;
 use std::fs;
 use std::path::Path;
 
+use std::thread;
+use std::time::Duration;
+
 use log::debug;
 use env_logger;
 
@@ -45,5 +48,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         } else {
             fanshim.color(params.brightness, params.intensity, params.intensity, 0);
         }
+
+        thread::sleep(Duration::from_millis(1000));
     }
 }
