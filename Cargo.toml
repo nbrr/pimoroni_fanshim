@@ -13,3 +13,8 @@ rppal = "0.12"
 log = "0.4.8"
 env_logger = "0.7.1"
 structopt = "0.3.12"
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
