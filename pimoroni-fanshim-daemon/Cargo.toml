@@ -5,7 +5,7 @@ authors = ["nbrr <nbrr@protonmail.com>"]
 edition = "2021"
 
 [dependencies]
-pimoroni_fanshim = { path = "../pimoroni-fanshim" }
+pimoroni-fanshim = { path = "../pimoroni-fanshim" }
 log = "0.4.8"
 env_logger = "0.7.1"
 structopt = "0.3.12"
