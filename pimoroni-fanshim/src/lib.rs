@@ -111,7 +111,6 @@ mod tests {
         thread::sleep(Duration::from_millis(1000));
         for i in 0..32 {
             fs.color(i, 255, 255, 255);
-            println!("{:?}", br);
             thread::sleep(Duration::from_millis(1000));
         }
         fs.led_off();

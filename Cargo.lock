@@ -126,13 +126,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b16bd47d9e329435e309c58469fe0791c2d0d1ba96ec0954152a5ae2b04387dc"
 
 [[package]]
-name = "pimoroni_fanshim"
+name = "pimoroni-fanshim-daemon"
 version = "0.1.0"
 dependencies = [
  "env_logger",
  "log",
- "rppal",
+ "pimoroni_fanshim",
  "structopt",
+]
+
+[[package]]
+name = "pimoroni_fanshim"
+version = "0.1.0"
+dependencies = [
+ "rppal",
 ]
 
 [[package]]
